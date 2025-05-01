@@ -106,10 +106,10 @@ class TicketSerializer(serializers.ModelSerializer):
             )
 
         Ticket.validate_ticket(
-            row,
-            seat,
-            movie_session.cinema_hall,
-            serializers.ValidationError,
+            row=row,
+            seat=seat,
+            cinema_hall=movie_session.cinema_hall,
+            error_to_raise=serializers.ValidationError
         )
         return data
 
