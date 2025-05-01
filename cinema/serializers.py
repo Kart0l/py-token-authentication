@@ -97,7 +97,8 @@ class TicketSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         """
         Validate ticket data using the static validate_ticket method from Ticket model.
-        This method checks if row and seat numbers are within the cinema hall's capacity.
+        This method checks if row and seat numbers are within the cinema hall's
+        capacity.
         """
         data = super(TicketSerializer, self).validate(attrs)
         row = attrs.get("row")
