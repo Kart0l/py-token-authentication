@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from cinema.models import Movie, Genre, Actor
-from cinema.serializers import MovieSerializer
+from cinema.serializers import MovieListSerializer
 from user.tests.test_user_api import create_user
 
 MOVIE_URL = reverse("cinema:movie-list")
@@ -66,7 +66,7 @@ class PrivateMovieApiTests(TestCase):
         response = self.client.get(MOVIE_URL)
 
         movies = Movie.objects.all()
-        serializer = MovieSerializer(movies, many=True)
+        serializer = MovieListSerializer(movies, many=True)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serializer.data)

@@ -12,7 +12,7 @@ from cinema.tests.test_cinema_hall_api import sample_cinema_hall
 from cinema.tests.test_genre_api import sample_genre
 from cinema.tests.test_movie_api import sample_movie
 from user.tests.test_user_api import create_user
-from cinema.serializers import MovieSessionSerializer
+from cinema.serializers import MovieSessionListSerializer
 
 MOVIE_SESSION_URL = reverse("cinema:moviesession-list")
 
@@ -79,7 +79,7 @@ class PrivateMovieSessionApiTests(TestCase):
         response = self.client.get(MOVIE_SESSION_URL)
 
         movie_sessions = MovieSession.objects.all()
-        serializer = MovieSessionSerializer(movie_sessions, many=True)
+        serializer = MovieSessionListSerializer(movie_sessions, many=True)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serializer.data)
