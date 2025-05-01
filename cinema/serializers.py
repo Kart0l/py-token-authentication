@@ -96,10 +96,19 @@ class MovieSessionDetailSerializer(MovieSessionSerializer):
 class TicketSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         data = super(TicketSerializer, self).validate(attrs)
+        row = attrs.get("row")
+        seat = attrs.get("seat")
+        movie_session = attrs.get("movie_session")
+
+        if not all([row, seat, movie_session]):
+            raise serializers.ValidationError(
+                "Row, seat and movie_session are required"
+            )
+
         Ticket.validate_ticket(
-            attrs["row"],
-            attrs["seat"],
-            attrs["movie_session"].cinema_hall,
+            row,
+            seat,
+            movie_session.cinema_hall,
             serializers.ValidationError,
         )
         return data
@@ -128,7 +137,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         with transaction.atomic():
-            tickets_data = validated_data.pop("tickets")
+            tickets_data = validated_data.pop("tickets", [])
             order = Order.objects.create(**validated_data)
             for ticket_data in tickets_data:
                 Ticket.objects.create(order=order, **ticket_data)
@@ -136,10 +145,11 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         with transaction.atomic():
-            tickets_data = validated_data.pop("tickets")
-            instance.tickets.all().delete()
-            for ticket_data in tickets_data:
-                Ticket.objects.create(order=instance, **ticket_data)
+            tickets_data = validated_data.pop("tickets", [])
+            if tickets_data:
+                instance.tickets.all().delete()
+                for ticket_data in tickets_data:
+                    Ticket.objects.create(order=instance, **ticket_data)
             return instance
 
 

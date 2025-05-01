@@ -3,6 +3,7 @@ from datetime import datetime
 from django.db.models import F, Count
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import serializers
 
 from cinema.models import Genre, Actor, CinemaHall, Movie, MovieSession, Order
 from cinema.permissions import IsAdminOrIfAuthenticatedReadOnly, IsOwnerOrAdmin
@@ -77,11 +78,22 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
 
         if date:
-            date = datetime.strptime(date, "%Y-%m-%d").date()
-            queryset = queryset.filter(show_time__date=date)
+            try:
+                date = datetime.strptime(date, "%Y-%m-%d").date()
+                queryset = queryset.filter(show_time__date=date)
+            except ValueError:
+                raise serializers.ValidationError(
+                    {"date": "Invalid date format. Use YYYY-MM-DD"}
+                )
 
         if movie_id:
-            queryset = queryset.filter(movie_id=int(movie_id))
+            try:
+                movie_id = int(movie_id)
+                queryset = queryset.filter(movie_id=movie_id)
+            except ValueError:
+                raise serializers.ValidationError(
+                    {"movie": "Movie ID must be an integer"}
+                )
 
         return queryset
 
