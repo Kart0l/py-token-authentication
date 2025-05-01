@@ -16,4 +16,4 @@ class IsOwnerOrAdmin(permissions.BasePermission):
         return bool(
             request.user.is_staff
             or obj.user == request.user
-        ) 
+        )
