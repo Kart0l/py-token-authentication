@@ -9,7 +9,7 @@ from rest_framework import status
 from cinema.models import MovieSession, Movie, CinemaHall
 from cinema.tests.test_actor_api import sample_actor
 from cinema.tests.test_cinema_hall_api import sample_cinema_hall
-from cinema.tests.test_genre_api import sample_genres
+from cinema.tests.test_genre_api import sample_genre
 from cinema.tests.test_movie_api import sample_movie
 from user.tests.test_user_api import create_user
 from cinema.serializers import MovieSessionSerializer
